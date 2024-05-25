@@ -79,6 +79,12 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             raise ServiceUnavailable("Unknown exception") from e
 
 
+def _get_default_file_storage():
+    if django.VERSION <= (5, 1):
+        return settings.DEFAULT_FILE_STORAGE
+    return settings.STORAGES["default"]["BACKEND"]
+
+
 class DefaultFileStorageHealthCheck(StorageHealthCheck):
     storage_alias = "default"
-    storage = settings.DEFAULT_FILE_STORAGE
+    storage = _get_default_file_storage()
